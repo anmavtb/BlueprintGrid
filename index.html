@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="language" content="fr">
+    <!-- <link rel="shortcut icon" href="images/favicon.ico" /> -->
+    <link rel="stylesheet" type="text/css" href="code/css/style.css">
+    <title>BlueprintGrid</title>
+</head>
+
+<body>
+    <div id="container">
+        <canvas id="gridCanvas"></canvas>
+        <div id="buttonsContainer">
+            <button onclick="clearCanvas()">Clear All</button>
+            <button onclick="SelectWall(new Wall(1000, 20))">Add Wall</button>
+            <button onclick="SelectWall(new Wall(500, 10))">Add Small Wall</button>
+        </div>
+    </div>
+    <select id="drawMode">
+        <option value="none">Select Mode</option>
+        <option value="draw">Draw Walls</option>
+    </select>
+</body>
+
+<script src="code/js/script.js"></script>
+
+</html>

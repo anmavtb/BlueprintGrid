@@ -1,0 +1,23 @@
+body {
+    background:rgb(50, 50, 50);
+}
+
+#container {
+    display: flex;
+    flex-direction: row;
+}
+
+canvas {
+    border: 1px solid white;
+}
+
+#buttonsContainer {
+    margin-left: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+button {
+    margin-bottom: 5px;
+}
