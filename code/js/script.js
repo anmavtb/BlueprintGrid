@@ -21,6 +21,9 @@ canvas.height = cellSize * numRows;
 
 let selectedWall = null;
 
+// Array to store the placed walls
+let placedWalls = [];
+
 // Function to draw the grid
 function drawGrid() {
     // Draw horizontal grid lines
@@ -42,11 +45,64 @@ function drawGrid() {
     }
 }
 
-// Clear the Grid
-function clearCanvas() {
+// Function to draw all placed walls
+function drawPlacedWalls() {
+    placedWalls.forEach(wall => {
+        PlaceWall(wall.x, wall.y, wall);
+    });
+}
+
+// Initial draw of the grid
+drawGrid();
+
+// Clear and redraw the Grid and the walls
+function UpdateCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawGrid();
+    drawPlacedWalls();
 }
+
+// Clear the Grid and delete all the walls
+function ClearAll() {
+    placedWalls = [];
+    UpdateCanvas();
+}
+
+// Variable to store the position of the mouse cursor
+let mouseX = 0;
+let mouseY = 0;
+
+// Function to draw the ghost wall
+function drawGhostWall(x, y, wall) {
+    // Calculate the position to draw the ghost wall
+    const drawX = Math.floor(x / cellSize) * cellSize;
+    const drawY = Math.floor(y / cellSize) * cellSize;
+
+    // Draw the ghost wall based on its type and dimensions
+    ctx.save(); // Save the current drawing state
+    ctx.globalAlpha = .8; // Set the transparency
+    ctx.strokeStyle = 'lime';
+    ctx.lineWidth = 4; // Thin line for the wall
+    ctx.beginPath();
+    ctx.moveTo(drawX, drawY + cellSize);
+    ctx.lineTo(drawX + wall.length / 10, drawY + cellSize);
+    ctx.stroke();
+    ctx.restore(); // Restore the previous drawing state
+}
+
+// Event listener for tracking mouse movement on the canvas
+canvas.addEventListener('mousemove', function (event) {
+    mouseX = event.offsetX; // Update mouseX with the x-coordinate of the mouse
+    mouseY = event.offsetY; // Update mouseY with the y-coordinate of the mouse
+
+    // Redraw the canvas to clear any previous ghost walls and draw the grid
+    UpdateCanvas();
+
+    // If a wall is selected, draw the ghost wall at the current mouse position
+    if (selectedWall) {
+        drawGhostWall(mouseX, mouseY, selectedWall);
+    }
+});
 
 // Event handler for placing the wall on the grid
 canvas.addEventListener('click', function (event) {
@@ -56,18 +112,15 @@ canvas.addEventListener('click', function (event) {
 
         // Place the wall at the clicked position
         PlaceWall(x, y, selectedWall);
+        placedWalls.push({ x, y, selectedWall });
     }
 });
 
 // Function to place the wall on the grid
 function PlaceWall(x, y, wall) {
-    // Calculate the grid cell coordinates
-    const gridX = Math.floor(x / cellSize);
-    const gridY = Math.floor(y / cellSize);
-
     // Calculate the position to draw the wall, snapping it to the grid lines
-    const drawX = gridX * wall.length / 10;
-    const drawY = gridY * cellSize + cellSize / 2;
+    const drawX = x * cellSize;
+    const drawY = y * cellSize + cellSize / 2;
 
     // Draw the wall based on its type and dimensions
     ctx.strokeStyle = 'cyan';
@@ -82,17 +135,3 @@ function PlaceWall(x, y, wall) {
 function SelectWall(wall) {
     selectedWall = wall;
 }
-
-// Event handler for dynamically placing walls based on mouse movement
-canvas.addEventListener('mousemove', function (event) {
-    if (selectedWall) {
-        const x = Math.floor(event.offsetX / cellSize); // Calculate the grid cell x-coordinate
-        const y = Math.floor(event.offsetY / cellSize); // Calculate the grid cell y-coordinate
-
-        // Place the wall at the mouse position
-        PlaceWall(x, y, selectedWall);
-    }
-});
-
-// Initial draw of the grid
-drawGrid();
